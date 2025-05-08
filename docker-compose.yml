@@ -1,0 +1,87 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: hcmut_chatbot_app
+    ports:
+      - "${APP_PORT:-8000}:${APP_PORT:-8000}"
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    depends_on:
+      - qdrant
+      - tei_server
+      - tgi_server
+    networks:
+      - chatbot_network
+    command: python -m app.main
+
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: qdrant_db
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - ./qdrant_storage:/qdrant/storage:z
+    environment:
+      QDRANT__SERVICE__API_KEY: ${QDRANTDB_API_KEY:-YOUR_QDRANT_API_KEY} # Optional: if you want to secure Qdrant
+    networks:
+      - chatbot_network
+
+  tei_server:
+    image: ghcr.io/huggingface/text-embeddings-inference:cpu-latest # Or use :latest for GPU if available
+    container_name: tei_server
+    ports:
+      - "8080:80" # Default TEI port
+    volumes:
+      - ./tei_cache:/data # Optional: Cache models to speed up restarts
+    environment:
+      - MODEL_ID=${EMBEDDING_MODEL:-bkai-foundation-models/vietnamese-bi-encoder}
+      # Add other TEI specific environment variables if needed, e.g., for quantization, max batch size, etc.
+      # - QUANTIZE=bitsandbytes # Example for quantization
+      # - MAX_BATCH_TOKENS=...
+    pull_policy: always
+    networks:
+      - chatbot_network
+
+  tgi_server:
+    image: ghcr.io/huggingface/text-generation-inference:latest # Use a specific version if needed, e.g., 1.1.0
+    container_name: tgi_server
+    ports:
+      - "${TGI_HTTP_PORT:-8081}:80" # Expose TGI's HTTP port (default internal is 80)
+    volumes:
+      - ./tgi_cache:/data # Optional: Cache models
+    environment:
+      - MODEL_ID=${LLM_MODEL_ID:-gpt2} # Default to gpt2, user should change this
+      - PORT=80 # Internal port TGI listens on
+      # Add other TGI specific environment variables if needed
+      # Example for GPU deployment:
+      # - NVIDIA_VISIBLE_DEVICES=all
+      # - SHARD_COUNT=1 # Or number of GPUs
+      # - MAX_CONCURRENT_REQUESTS=...
+      # - MAX_INPUT_LENGTH=...
+      # - MAX_TOTAL_TOKENS=...
+    # deploy: # Uncomment and configure for GPU resources
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: 1 # Request 1 GPU
+    #           capabilities: [gpu]
+    pull_policy: always
+    networks:
+      - chatbot_network
+
+networks:
+  chatbot_network:
+    driver: bridge
+
+volumes:
+  qdrant_storage:
+  tei_cache: # Optional: if you use the volume for tei_server
+  tgi_cache: # Optional: if you use the volume for tgi_server

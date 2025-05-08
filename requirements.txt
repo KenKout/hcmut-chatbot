@@ -1,0 +1,36 @@
+# FastAPI 
+fastapi
+uvicorn
+python-multipart
+
+# Requests
+httpx
+
+# Pydantic
+pydantic
+
+# Env
+python-dotenv
+
+# Haystack
+git+https://github.com/deepset-ai/haystack.git@main
+qdrant-haystack
+
+# Logging
+loguru
+
+# LLM
+huggingface_hub
+openai
+
+# Data
+pandas
+markdown-it-py 
+mdit_plain
+pypdf
+python-docx
+python-pptx
+trafilatura
+jq
+openpyxl
+tabulate

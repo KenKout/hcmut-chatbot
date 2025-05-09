@@ -12,16 +12,16 @@ class Database:
     def __init__(self):
         if settings.DEBUG:
             self.faq_documents_store = QdrantDocumentStore(
-                url=":memory:",
+                ":memory:",
                 embedding_dim=settings.EMBEDDING_DIM,
             )
 
             self.web_documents_store = QdrantDocumentStore(
-                url=":memory:",
+                ":memory:",
                 embedding_dim=settings.EMBEDDING_DIM,
             )
             self.file_documents_store = QdrantDocumentStore( # New store for general files
-                url=":memory:",
+                ":memory:",
                 embedding_dim=settings.EMBEDDING_DIM,
             )
         else:

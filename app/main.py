@@ -56,7 +56,6 @@ def main():
             app,
             host=settings.APP_HOST,
             port=settings.APP_PORT,
-            reload=settings.APP_RELOAD,
             workers=settings.APP_WORKERS,
         )
 

@@ -18,7 +18,6 @@ class Settings:
         self.APP_DESCRIPTION = os.getenv("APP_DESCRIPTION", "FastAPI")
         self.APP_HOST = os.getenv("APP_HOST", "0.0.0.0")
         self.APP_PORT = int(os.getenv("APP_PORT", 8000))
-        self.APP_RELOAD = os.getenv("APP_RELOAD", "false").lower() == "true"
         self.APP_CORS_ORIGINS = os.getenv("APP_CORS_ORIGINS", "*")
         self.APP_WORKERS = int(os.getenv("APP_WORKERS", 1))
 

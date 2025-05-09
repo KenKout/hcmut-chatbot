@@ -7,7 +7,6 @@ from haystack.components.embedders import (
     SentenceTransformersTextEmbedder
 )
 from app.utils.embedders import embedder
-from haystack_integrations.document_stores.qdrant import QdrantDocumentStore
 from haystack_integrations.components.retrievers.qdrant import QdrantEmbeddingRetriever
 from haystack.utils import Secret
 from pathlib import Path

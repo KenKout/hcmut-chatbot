@@ -3,7 +3,7 @@ import argparse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI
 from app.envs import settings
-from app.routers import query, upload
+from app.routers import query, upload, completions
 from app.database import database
 from loguru import logger
 
@@ -20,6 +20,7 @@ app.add_middleware(
 # Include routers
 app.include_router(query.router, tags=["query"])
 app.include_router(upload.router, tags=["File Uploads"])
+app.include_router(completions.router, tags=["Completions"])
 
 def main():
     parser = argparse.ArgumentParser(description="Main application CLI")

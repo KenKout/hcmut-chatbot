@@ -61,9 +61,7 @@ class LLM:
             temperature=settings.LLM_TEMPERATURE,
             model=settings.LLM_OPENAI_MODEL,
         )
-
-        answer = response.choices[0].message.content.strip()
-        return answer
+        return response
     
     async def get_answer_async_stream(self, query: str, context: str):
         system_prompt = self.build_prompt(query, context)

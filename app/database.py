@@ -1,15 +1,28 @@
 import pandas as pd
 from loguru import logger
 from tqdm import tqdm
+from pymongo import AsyncMongoClient
 from app.envs import settings
 from app.utils.embedders import embedder
 from haystack_integrations.document_stores.qdrant import QdrantDocumentStore
 from haystack import Document
 from haystack.components.preprocessors import DocumentPreprocessor
 from haystack.utils import Secret
+from app.models.stats import QueryStats
 
 class Database:
     def __init__(self, recreate_index=False):
+        self.mongo_client = None
+        self.mongo_db = None
+        try:
+            self.mongo_client = AsyncMongoClient(settings.MONGODB_URL)
+            self.mongo_db = self.mongo_client[settings.MONGODB_DB_NAME]
+            logger.info(f"PyMongo Async client initialized for {settings.MONGODB_DB_NAME}. Connection will be established on first operation.")
+        except Exception as e:
+            logger.error(f"Error initializing PyMongo Async client: {e}")
+            self.mongo_client = None
+            self.mongo_db = None
+
         if settings.DEBUG:
             self.faq_documents_store = QdrantDocumentStore(
                 ":memory:",
@@ -149,5 +162,18 @@ class Database:
             policy="OVERWRITE",
         )
 
+
+    async def insert_query_stats(self, stats_data: QueryStats):
+        if self.mongo_db is None:
+            logger.error("MongoDB is not connected. Cannot insert stats.")
+            return None
+        try:
+            collection = self.mongo_db[QueryStats.Config.collection_name]
+            inserted_result = await collection.insert_one(stats_data.model_dump(by_alias=True))
+            logger.info(f"Inserted query stats with ID: {inserted_result.inserted_id}")
+            return inserted_result.inserted_id
+        except Exception as e:
+            logger.error(f"Error inserting query stats into MongoDB: {e}")
+            return None
 
 database = Database()

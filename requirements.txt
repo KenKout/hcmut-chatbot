@@ -34,3 +34,6 @@ trafilatura
 jq
 openpyxl
 tabulate
+
+# Database
+pymongo

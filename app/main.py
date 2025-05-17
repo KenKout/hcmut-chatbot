@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI
 from app.envs import settings
 from app.routers import query, upload, completions
-from app.database import database
+from app.database import Database
 from loguru import logger
 
 app = FastAPI()
@@ -42,6 +42,7 @@ def main():
         web_file_path = input("Enter the path to the Web data file (e.g., data/web.json): ")
         
         try:
+            database = Database(recreate_index=True)
             database.reindex(faq_file_path, web_file_path, dev=args.dev)
             logger.info("Database reindexing completed successfully.")
         except FileNotFoundError as e:

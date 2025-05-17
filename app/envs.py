@@ -60,5 +60,9 @@ class Settings:
         self.CACHE_ENABLED = os.getenv("CACHE_ENABLED", "false").lower() == "true"
         self.FAQ_ENABLE_PARAPHRASING = os.getenv("FAQ_ENABLE_PARAPHRASING", "false").lower() == "true"
 
+        # MongoDB Settings
+        self.MONGODB_URL = os.getenv("MONGODB_URL", "mongodb://localhost:27017")
+        self.MONGODB_DB_NAME = os.getenv("MONGODB_DB_NAME", "stats")
+
 
 settings = Settings()

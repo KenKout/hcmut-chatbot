@@ -9,7 +9,7 @@ from haystack.components.preprocessors import DocumentPreprocessor
 from haystack.utils import Secret
 
 class Database:
-    def __init__(self):
+    def __init__(self, recreate_index=False):
         if settings.DEBUG:
             self.faq_documents_store = QdrantDocumentStore(
                 ":memory:",
@@ -32,7 +32,7 @@ class Database:
                 hnsw_config={"m": 128},
                 timeout=settings.DB_TIMEOUT,
                 write_batch_size=settings.DB_BATCH_SIZE,
-                recreate_index=False,
+                recreate_index=recreate_index,
                 index="faq",
             )
 
@@ -43,7 +43,7 @@ class Database:
                 hnsw_config={"m": 128},
                 timeout=settings.DB_TIMEOUT,
                 write_batch_size=settings.DB_BATCH_SIZE,
-                recreate_index=False,
+                recreate_index=recreate_index,
                 index="web",
             )
 

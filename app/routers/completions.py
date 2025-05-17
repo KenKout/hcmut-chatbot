@@ -69,7 +69,9 @@ async def _get_documents_and_context(query: str) -> tuple[List[Dict[str, Any]], 
 
     context_parts = []
     if faq_documents:
-        context_parts.extend([doc.content for doc in faq_documents if doc.content])
+        for doc in faq_documents:
+            if doc.content:
+                context_parts.append(f"FAQ: {doc.content}. Answer: {doc.meta.get('answer', '')}")
     if web_documents:
         context_parts.extend([doc.content for doc in web_documents if doc.content])
     if file_documents:

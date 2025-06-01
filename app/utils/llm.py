@@ -27,6 +27,7 @@ class LLM:
 - If the context appears unreadable or of poor quality, tell the user then answer as best as you can.
 - If the answer is not in the context but you think you know the answer, explain that to the user then answer with your own knowledge.
 - Answer directly and without using xml tags.
+- Nếu người dùng nói rằng bạn đã sai, hãy trả lời: "Xin lỗi, tôi sẽ báo cáo lại cho nhóm phát triển để họ xem xét lại câu trả lời của tôi. Cảm ơn bạn đã thông báo cho tôi về điều này.".
 </rules>
 
 <user_query>
